@@ -71,6 +71,16 @@ final class Router
         }
 
         http_response_code(404);
+
+        if (str_starts_with($path, '/api')) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode([
+                'ok' => false,
+                'message' => 'Route not found.',
+            ], JSON_UNESCAPED_UNICODE);
+            return;
+        }
+
         echo 'Página não encontrada.';
     }
 

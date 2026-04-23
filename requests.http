@@ -1,0 +1,26 @@
+@baseUrl = http://localhost:8081
+
+### API - listar tasks (atalho)
+GET {{baseUrl}}/api
+Accept: application/json
+
+### API - listar tasks
+GET {{baseUrl}}/api/tasks
+Accept: application/json
+
+### API - buscar task por id (valido)
+GET {{baseUrl}}/api/tasks/1
+Accept: application/json
+
+### API - buscar task inexistente
+GET {{baseUrl}}/api/tasks/99999
+Accept: application/json
+
+### API - metodo nao permitido (deve retornar 404 no router atual)
+POST {{baseUrl}}/api/tasks
+Accept: application/json
+Content-Type: application/json
+
+{
+  "title": "Nova task de teste"
+}

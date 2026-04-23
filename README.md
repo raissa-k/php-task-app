@@ -98,6 +98,65 @@ docker compose down
 - `POST /tasks/{id}` -> atualiza task
 - `POST /tasks/{id}/delete` -> remove task
 
+## API JSON
+
+- `GET /api` -> retorna todas as tasks em JSON
+- `GET /api/tasks` -> retorna todas as tasks em JSON
+- `GET /api/tasks/1` -> retorna uma task especifica
+
+### Teste rapido (com Docker e projeto ja rodando)
+
+Se os containers ja estao ativos, rode direto no terminal:
+
+```bash
+curl -s http://localhost:8081/api
+curl -s http://localhost:8081/api/tasks
+curl -s http://localhost:8081/api/tasks/1
+```
+
+Para visualizar formatado (se tiver `jq`):
+
+```bash
+curl -s http://localhost:8081/api/tasks | jq
+```
+
+### Teste pela IDE com arquivo HTTP
+
+O projeto inclui o arquivo [requests.http](requests.http) com chamadas prontas para a API.
+
+Como usar no VS Code:
+
+1. Abra o arquivo [requests.http](requests.http).
+2. Clique em Send Request acima da requisicao que deseja executar.
+3. Veja a resposta no painel lateral.
+
+Como usar no PhpStorm:
+
+1. Abra o arquivo [requests.http](requests.http).
+2. Clique no icone de play ao lado da requisicao.
+3. Confira status code, headers e JSON retornado.
+
+Dica: altere a variavel @baseUrl no topo do arquivo se sua porta for diferente de 8081.
+
+Exemplo de resposta:
+
+```json
+{
+	"ok": true,
+	"count": 3,
+	"data": [
+		{
+			"id": 1,
+			"title": "Estudar roteamento",
+			"description": "Implementar um Router simples (GET/POST + params).",
+			"is_done": false,
+			"created_at": "2026-04-23 10:00:00",
+			"updated_at": null
+		}
+	]
+}
+```
+
 ## Banco de dados
 
 - O MySQL é iniciado via Docker Compose.

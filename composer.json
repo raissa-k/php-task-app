@@ -1,0 +1,11 @@
+{
+  "name": "raissakuzer/task-app",
+  "description": "Mini app de tasks com estrutura MVC e roteamento em PHP",
+  "type": "project",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: task_app_app
+    ports:
+      - "8081:80"
+    command: >
+      sh -c "if [ ! -f vendor/autoload.php ]; then
+        composer install --no-interaction --prefer-dist;
+      else
+        composer dump-autoload --no-interaction --optimize;
+      fi && apache2-foreground"
+    volumes:
+      - ./:/var/www/html
+    environment:
+      DB_HOST: db
+      DB_NAME: tasks
+      DB_USER: app
+      DB_PASSWORD: app123
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: task_app_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: tasks
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app123
+      MYSQL_ROOT_PASSWORD: root123
+    ports:
+      - "3308:3306"
+    volumes:
+      - task_mysql_data:/var/lib/mysql
+      - ./src/database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+volumes:
+  task_mysql_data:

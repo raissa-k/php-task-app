@@ -129,7 +129,7 @@ final class ViewCsrfTest extends TestCase
 
     public function testPullFlashNaoQuebraComDadosMalformados(): void
     {
-        // Sessão corrompida não deve lançar exceção
+        // Sessão corrompida não deve lançar exception
         $_SESSION['flash'] = 'string-inesperada';
         $flash             = View::pullFlash();
         $this->assertNull($flash);

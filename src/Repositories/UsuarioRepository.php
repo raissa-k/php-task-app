@@ -25,12 +25,14 @@ final class UsuarioRepository
     public function all(string $q = ''): array
     {
         if ($q !== '') {
+            // addcslashes escapa % e `_` que o MySQL interpreta como wildcards no LIKE.
+            $escaped = addcslashes($q, '%_');
             $stmt = $this->pdo->prepare(
                 'SELECT id, nome, email, created_at FROM usuarios
                  WHERE nome LIKE :q OR email LIKE :q2
                  ORDER BY id ASC'
             );
-            $stmt->execute(['q' => '%' . $q . '%', 'q2' => '%' . $q . '%']);
+            $stmt->execute(['q' => '%' . $escaped . '%', 'q2' => '%' . $escaped . '%']);
         } else {
             $stmt = $this->pdo->query('SELECT id, nome, email, created_at FROM usuarios ORDER BY id ASC');
         }

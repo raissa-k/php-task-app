@@ -50,6 +50,16 @@ final class UploadController
             return;
         }
 
+        /*
+         * Whitelist de formato: aceita só o padrão gerado pelo UploadService.
+         * bin2hex(random_bytes(8)) produz 16 hex minúsculos + extensão permitida. Mesmo que basename() passe, um nome fora desse padrão é bloqueado aqui.
+         */
+        if (!preg_match('/^[a-f0-9]{16}\.(jpg|png|webp)$/', $filename)) {
+            http_response_code(400);
+            echo 'Nome de arquivo inválido.';
+            return;
+        }
+
         $path = $this->upload->storagePath($filename);
 
         if (!is_file($path)) {

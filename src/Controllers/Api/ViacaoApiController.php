@@ -43,7 +43,7 @@ final class ViacaoApiController
         $v = $this->service->find($id);
 
         if ($v === null) {
-            $this->jsonResponse(['ok' => false, 'error' => 'Not found'], 404);
+            $this->jsonResponse(['ok' => false, 'message' => 'Viação não encontrada.'], 404);
             return;
         }
 
@@ -64,7 +64,7 @@ final class ViacaoApiController
     public function store(): void
     {
         if (!$this->authorize()) {
-            $this->jsonResponse(['ok' => false, 'error' => 'Unauthorized'], 401);
+            $this->jsonResponse(['ok' => false, 'message' => 'Não autorizado.'], 401);
             return;
         }
 
@@ -86,14 +86,14 @@ final class ViacaoApiController
     public function update(int $id): void
     {
         if (!$this->authorize()) {
-            $this->jsonResponse(['ok' => false, 'error' => 'Unauthorized'], 401);
+            $this->jsonResponse(['ok' => false, 'message' => 'Não autorizado.'], 401);
             return;
         }
 
         $v = $this->service->find($id);
 
         if ($v === null) {
-            $this->jsonResponse(['ok' => false, 'error' => 'Not found'], 404);
+            $this->jsonResponse(['ok' => false, 'message' => 'Viação não encontrada.'], 404);
             return;
         }
 
@@ -115,14 +115,14 @@ final class ViacaoApiController
     public function destroy(int $id): void
     {
         if (!$this->authorize()) {
-            $this->jsonResponse(['ok' => false, 'error' => 'Unauthorized'], 401);
+            $this->jsonResponse(['ok' => false, 'message' => 'Não autorizado.'], 401);
             return;
         }
 
         $v = $this->service->find($id);
 
         if ($v === null) {
-            $this->jsonResponse(['ok' => false, 'error' => 'Not found'], 404);
+            $this->jsonResponse(['ok' => false, 'message' => 'Viação não encontrada.'], 404);
             return;
         }
 

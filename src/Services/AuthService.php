@@ -61,30 +61,43 @@ final class AuthService
     {
         $this->startSession();
 
+        /*
+         * Rate limiting: bloqueia após 5 tentativas falhas no último minuto.
+         * Limita força bruta sem exigir infraestrutura extra (banco, cache, etc).
+         *
+         * Limitação desta implementação: atacante numa aba diferente teria uma sessão diferente.
+         * Em produção, usar controle mais direcionado como, por exemplo, por IP via cache (Redis) ou banco.
+         * Pesquise "brute force attack", "rate limiting", "account lockout".
+         */
+        if ($this->isRateLimited()) {
+            return false;
+        }
+
         $usuario = $this->users->findByEmail($email);
 
         if ($usuario === null || $usuario->senha === null) {
+            $this->recordFailedAttempt();
             return false;
         }
 
         /*
          * password_verify() compara a senha digitada com o hash armazenado.
          * NUNCA compare senhas com == ou ===, o hash muda a cada geração mesmo pra mesma senha.
-         * password_verify() sabe como comparar corretamente.
-         * Dica: o tempo de password_verify() é propositalmente lento (custo do bcrypt).
-         * Isso dificulta ataques de força bruta mesmo que o banco vaze.
+         * password_verify() sabe como comparar corretamente. O tempo de password_verify() é propositalmente mais lento (custo do bcrypt).
          * Pesquise "bcrypt cost factor", "rainbow table attack".
         */
         if (!password_verify($password, $usuario->senha)) {
+            $this->recordFailedAttempt();
             return false;
         }
 
+        $this->clearRateLimit();
+
         /*
          * session_regenerate_id(true): troca o ID da sessão após o login.
-         * Por que? Para prevenir "session fixation attack":
-         * sem isso, um atacante poderia plantar um session ID no navegador da vítima antes do login, e depois usar esse mesmo ID pra sequestrar a sessão.
-         * Regenerar o ID no login invalida qualquer ID pré-existente.
-         * O parâmetro true apaga a sessão antiga do servidor.
+         * Por quê? Para prevenir "session fixation attack".
+         * Sem isso, um atacante poderia plantar um session ID no navegador antes do login, e depois usar esse mesmo ID pra sequestrar a sessão.
+         * Regenerar o ID no login invalida qualquer ID pré-existente. O parâmetro true apaga a sessão antiga do servidor.
          * Pesquise "session fixation" e "session hijacking".
         */
         session_regenerate_id(true);
@@ -93,6 +106,38 @@ final class AuthService
         $_SESSION['user_email'] = $usuario->email;
 
         return true;
+    }
+
+    /**
+     * Retorna true se a sessão atual atingiu o limite de tentativas no último minuto.
+     * Chamado pelo AuthController pra exibir uma mensagem de erro específica.
+     */
+    public function isRateLimited(): bool
+    {
+        $now      = time();
+        $attempts = array_filter(
+            $_SESSION['login_attempts'] ?? [],
+            fn(int $t): bool => $t > $now - 60,
+        );
+        return count($attempts) >= 5;
+    }
+
+    /** Registra o timestamp da tentativa falha na sessão. */
+    private function recordFailedAttempt(): void
+    {
+        $now      = time();
+        $attempts = array_filter(
+            $_SESSION['login_attempts'] ?? [],
+            fn(int $t): bool => $t > $now - 60,
+        );
+        $attempts[]                 = $now;
+        $_SESSION['login_attempts'] = array_values($attempts);
+    }
+
+    /** Limpa o histórico de tentativas após login bem-sucedido. */
+    private function clearRateLimit(): void
+    {
+        unset($_SESSION['login_attempts']);
     }
 
     /** Remove a sessão do servidor e limpa o cookie no navegador. */

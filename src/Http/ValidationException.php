@@ -1,11 +1,11 @@
 <?php
-// Exceção usada quando validação falha; carrega lista de erros
+// Exception usada quando validação falha; carrega lista de erros
 
 declare(strict_types=1);
 
 namespace App\Http;
 
-// Exceção lançada quando validação falha; carregando array de erros
+// Exception lançada quando validação falha; carregando array de erros
 final class ValidationException extends \Exception
 {
     private array $errors;

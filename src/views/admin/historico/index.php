@@ -20,13 +20,20 @@ declare(strict_types=1);
 */ ?>
 <form class="filter-form" method="GET" action="/admin/historico">
 
+    <?php
+    /*
+     * viacao_id preservado como campo oculto: o link "Ver histórico desta viação" na tela de edição passa esse parâmetro, e ele precisa sobreviver ao submit do form.
+    */ ?>
+    <?php if (!empty($filters['viacao_id'])): ?>
+        <input type="hidden" name="viacao_id" value="<?= (int) $filters['viacao_id'] ?>">
+    <?php endif; ?>
+
     <div class="filter-field">
         <label class="filter-label" for="f-q">Busca</label>
-        <?php /*
-            Campo unificado: pesquisa ao mesmo tempo no nome da viação, nome do usuário
-            e no conteúdo JSON das alterações. O repository usa três placeholders
-            distintos (:q, :q_u, :q_v) porque o PDO não permite reutilizar o mesmo
-            nome de placeholder na mesma query.
+        <?php
+        /*
+         * Campo unificado: pesquisa ao mesmo tempo no nome da viação, nome do usuário e no conteúdo JSON das alterações.
+         * O repository usa três placeholders distintos (:q, :q_u, :q_v) porque o PDO não permite reutilizar o mesmo nome de placeholder na mesma query.
         */ ?>
         <input
             class="filter-input-lg"
@@ -47,11 +54,18 @@ declare(strict_types=1);
         */ ?>
         <select class="filter-input-md" id="f-acao" name="acao">
             <option value="">Todas</option>
-            <?php foreach (['Criado', 'Editado', 'Excluido'] as $opcao): ?>
+            <?php
+            /*
+             * AcaoHistorico::cases() devolve todos os cases do enum em ordem de declaração.
+             * Se um novo valor for adicionado ao enum, ele aparece aqui automaticamente.
+             * Antes: array hardcoded ['Criado', 'Editado', 'Excluido'], fácil de esquecer de atualizar.
+             * Agora: o enum é a fonte de verdade, a view só itera.
+             */ ?>
+            <?php foreach (\App\Enums\AcaoHistorico::cases() as $caso): ?>
                 <option
-                    value="<?= $opcao ?>"
-                    <?= (($filters['acao'] ?? '') === $opcao) ? 'selected' : '' ?>
-                ><?= $opcao ?></option>
+                    value="<?= $caso->value ?>"
+                    <?= (($filters['acao'] ?? '') === $caso->value) ? 'selected' : '' ?>
+                ><?= $caso->value ?></option>
             <?php endforeach; ?>
         </select>
     </div>

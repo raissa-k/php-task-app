@@ -7,6 +7,7 @@ namespace App\Controllers;
 
 use App\Core\View;
 use App\Services\HistoricoService;
+use App\Validators\HistoricoFilterValidator;
 
 final class HistoricoController
 {
@@ -20,16 +21,16 @@ final class HistoricoController
 
     public function index(): void
     {
-        // Lê filtros do GET com valores padrão seguros
-        $filters = [
-            'viacao_id'  => isset($_GET['viacao_id'])  ? (int) $_GET['viacao_id']  : null,
-            'usuario_id' => isset($_GET['usuario_id']) ? (int) $_GET['usuario_id'] : null,
-            'acao'       => $_GET['acao']      ?? null,
-            'date_from'  => $_GET['date_from'] ?? null,
-            'date_to'    => $_GET['date_to']   ?? null,
-            'q'          => $_GET['q']         ?? null,
-        ];
-
+        /*
+         * HistoricoFilterValidator centraliza toda a lógica de sanitização dos filtros:
+         * - viacao_id / usuario_id: cast pra int, descarta valores negativos ou zero
+         * - acao: allowlist contra ['Criado', 'Editado', 'Excluido']
+         * - date_from / date_to: valida formato Y-m-d e que a data é real
+         * - q: trim + cast
+         * Antes essa lógica estava espalhada aqui no controller.
+         * Centralizar no validator significa um único lugar pra atualizar quando as regras mudarem.
+         */
+        $filters   = new HistoricoFilterValidator()->parse($_GET);
         $historico = $this->service->getHistory($filters);
 
         View::render('admin/historico/index', [

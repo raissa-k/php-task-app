@@ -29,8 +29,8 @@ declare(strict_types=1);
         <label class="filter-label" for="f-ativa">Status</label>
         <select class="filter-input-md" id="f-ativa" name="ativa">
             <option value="">Todas</option>
-            <option value="1" <?= (($filters['ativa'] ?? '') === '1') ? 'selected' : '' ?>>Ativas</option>
-            <option value="0" <?= (($filters['ativa'] ?? '') === '0') ? 'selected' : '' ?>>Inativas</option>
+            <option value="1" <?= ($filters['ativa'] ?? null) === true  ? 'selected' : '' ?>>Ativas</option>
+            <option value="0" <?= ($filters['ativa'] ?? null) === false ? 'selected' : '' ?>>Inativas</option>
         </select>
     </div>
 

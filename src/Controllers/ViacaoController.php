@@ -11,12 +11,13 @@ use App\Http\ValidationException;
 use App\Services\AuthService;
 use App\Services\UploadService;
 use App\Services\ViacaoService;
+use App\Validators\ViacaoFilterValidator;
 use App\Validators\ViacaoValidator;
 
 /*
  * Padrão dos controllers neste projeto:
  * 1. Receber os dados do request (GET params, $_POST, $_FILES)
- * 2. Validar via Request + Validator (lança exceção se inválido)
+ * 2. Validar via Request + Validator (lança exception se POST inválido)
  * 3. Delegar a lógica de negócio pro Service
  * 4. Redirecionar ou renderizar a view
  * O controller NÃO acessa o banco diretamente, isso é responsabilidade do Service ou do Repository.
@@ -52,16 +53,13 @@ final class ViacaoController
     /** Lista viações no painel admin, com filtros opcionais de busca e status. */
     public function index(): void
     {
-        $q     = (string) ($_GET['q'] ?? '');
-        $ativaRaw = (string) ($_GET['ativa'] ?? '');
-        $ativa = $ativaRaw !== '' ? (bool) (int) $ativaRaw : null;
-
-        $viacoes = $this->service->all($q, $ativa);
+        $filters = new ViacaoFilterValidator()->parse($_GET);
+        $viacoes = $this->service->all($filters['q'], $filters['ativa']);
 
         View::render('admin/viacoes/index', [
             'title'   => 'Viações',
             'viacoes' => $viacoes,
-            'filters' => ['q' => $q, 'ativa' => $ativaRaw],
+            'filters' => $filters,
         ]);
     }
 

@@ -87,7 +87,7 @@ final class HistoricoModelTest extends TestCase
 
     public function testJsonSemChaveBeforeNaoQuebraGetBefore(): void
     {
-        // JSON válido mas sem a chave 'before': não deve lançar exceção
+        // JSON válido mas sem a chave 'before': não deve lançar exception
         $json = json_encode(['after' => ['nome' => 'X']]);
         $h    = Historico::fromRow($this->makeRow($json));
         $this->assertNull($h->getBefore());

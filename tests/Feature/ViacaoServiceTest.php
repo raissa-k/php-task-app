@@ -191,7 +191,7 @@ final class ViacaoServiceTest extends TestCase
 
     /*
      * Este teste verifica que a transação funciona corretamente: se o histórico falhar, o INSERT da viação deve ser desfeito (rollback).
-     * Para forçar a falha, usamos um "stub": um objeto falso que substitui o HistoricoRepository e faz o método create() lançar uma exceção.
+     * Para forçar a falha, usamos um "stub": um objeto falso que substitui o HistoricoRepository e faz o método create() lançar uma exception.
      * Diferença entre mock e stub no PHPUnit:
      * createMock()  -> cria um objeto com EXPECTATIVAS: você pode afirmar que certos métodos foram chamados (ou não) e quantas vezes.
      *                  Use quando o comportamento do colaborador é parte do que você está testando.
@@ -209,9 +209,9 @@ final class ViacaoServiceTest extends TestCase
 
         try {
             $service->create('Falha', 'Aqui', true, null);
-            $this->fail('Deveria ter lançado exceção quando o histórico falha');
+            $this->fail('Deveria ter lançado exception quando o histórico falha');
         } catch (\RuntimeException $e) {
-            // A exceção foi lançada, agora verificamos que o rollback funcionou:
+            // A exception foi lançada, agora verificamos que o rollback funcionou:
             // a viação NÃO deve ter sido inserida mesmo que o INSERT tenha chegado a executar
             $count = (int) $this->pdo->query('SELECT COUNT(*) FROM viacoes')->fetchColumn();
             $this->assertSame(0, $count, 'Rollback falhou: viação foi persistida mesmo com erro no histórico');

@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\AcaoHistorico;
 use App\Models\Viacao;
 use App\Repositories\HistoricoRepository;
 use PDO;
@@ -48,10 +49,14 @@ final class ViacaoService
             /*
              * PDO não permite reutilizar o mesmo placeholder nomeado (:q) duas vezes na mesma query, cada ocorrência precisa de um nome único.
              * Por isso usamos :q pra nome e :q2 pra cidade com o mesmo valor.
+             *
+             * addcslashes escapa % e `_` que o MySQL interpreta como wildcards no LIKE.
+             * Sem isso, "100%" no campo de busca vira "qualquer coisa com 100 e mais alguma coisa".
             */
+            $escaped = addcslashes($q, '%_');
             $wheres[] = '(nome LIKE :q OR cidade LIKE :q2)';
-            $params['q']  = '%' . $q . '%';
-            $params['q2'] = '%' . $q . '%';
+            $params['q']  = '%' . $escaped . '%';
+            $params['q2'] = '%' . $escaped . '%';
         }
 
         if ($ativa !== null) {
@@ -100,7 +105,7 @@ final class ViacaoService
          * Fazemos duas operações: INSERT na tabela viacoes + INSERT no histórico.
          * Se o INSERT do histórico falhar por algum motivo (ex: banco cheio), a viação já teria sido criada sem registro (estado inconsistente).
          * beginTransaction() garante que as duas operações sejam atômicas: ou as duas acontecem, ou nenhuma.
-         * Se qualquer exceção for lançada, o catch faz rollback e desfaz tudo.
+         * Se qualquer exception for lançada, o catch faz rollback e desfaz tudo.
         */
         $this->pdo->beginTransaction();
 
@@ -118,7 +123,7 @@ final class ViacaoService
             $id = (int) $this->pdo->lastInsertId();
 
             // Histórico: before = null (era vazio), after = estado atual
-            $this->historicoRepo->create($id, $usuarioId, 'Criado', null, $this->findRow($id));
+            $this->historicoRepo->create($id, $usuarioId, AcaoHistorico::Criado->value, null, $this->findRow($id));
 
             $this->pdo->commit();
             return $id;
@@ -156,7 +161,7 @@ final class ViacaoService
 
             // Só salva os campos que realmente mudaram e não o registro inteiro
             [$diffBefore, $diffAfter] = $this->diffRows($before, $after);
-            $this->historicoRepo->create($id, $usuarioId, 'Editado', $diffBefore, $diffAfter);
+            $this->historicoRepo->create($id, $usuarioId, AcaoHistorico::Editado->value, $diffBefore, $diffAfter);
 
             $this->pdo->commit();
 
@@ -191,7 +196,7 @@ final class ViacaoService
             $stmt->execute(['id' => $id]);
 
             // Histórico: after = null porque a viação não existe mais
-            $this->historicoRepo->create($id, $usuarioId, 'Excluido', $before, null);
+            $this->historicoRepo->create($id, $usuarioId, AcaoHistorico::Excluido->value, $before, null);
 
             $this->pdo->commit();
 
@@ -256,7 +261,7 @@ final class ViacaoService
      * Defesa extra contra path traversal: se $filename vier com "../" por algum bug, basename() descarta o caminho e deixa só o nome do arquivo.
      * O UploadService já faz essa proteção ao salvar, mas repetir aqui é barato e seguro.
      *
-     * Por que não lançar exceção se o arquivo não existir?
+     * Por que não lançar exception se o arquivo não existir?
      * O logo pode ter sido apagado manualmente, migrado ou nunca ter chegado ao discopor erro anterior.
      * O banco já está consistente (commit feito) e falhar aqui seria pior do que simplesmente pular.
      */

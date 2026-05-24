@@ -125,4 +125,17 @@ final class HistoricoRepositoryTest extends TestCase
         $results = $this->repo->findAll(['q' => 'Guanabara']);
         $this->assertCount(1, $results);
     }
+
+    public function testFindAllFiltragemPorQComAcentos(): void
+    {
+        // Testa busca parcial com acentos: "brasí" deve encontrar "brasília"
+        $this->inserir(1, null, 'Criado', null, ['cidade' => 'brasília']);
+        $this->inserir(2, null, 'Criado', null, ['cidade' => 'São Paulo']);
+
+        $results = $this->repo->findAll(['q' => 'brasí']);
+        $this->assertCount(1, $results);
+        $this->assertIsArray($results[0]->alteracoes);
+        // Verifica que o after contém a cidade "brasília"
+        $this->assertSame('brasília', $results[0]->alteracoes['after']['cidade']);
+    }
 }

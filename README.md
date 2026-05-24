@@ -402,6 +402,9 @@ Os testes de feature usam **SQLite em memória** sem Docker, sem MySQL.
 # Rodar localmente (PHP instalado na máquina)
 php vendor/bin/phpunit
 
+# Roda com mais detalhes sobre os testes, como o nome
+php vendor/bin/phpunit --testdox
+
 # Rodar dentro do container
 docker compose exec viacoes_php_demo_app php vendor/bin/phpunit
 ```

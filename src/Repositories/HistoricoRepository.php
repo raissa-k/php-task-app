@@ -126,6 +126,11 @@ class HistoricoRepository
         $wheres = [];
         $params = [];
 
+        // viacao_id: filtra histórico de uma viação específica.
+        if (!empty($filters['viacao_id'])) {
+            $wheres[] = 'h.viacao_id = :viacao_id';
+            $params['viacao_id'] = (int) $filters['viacao_id'];
+        }
         if (!empty($filters['acao']))       {
             $wheres[] = 'h.acao = :acao';
             $params['acao']       = $filters['acao'];
@@ -141,13 +146,24 @@ class HistoricoRepository
             $params['date_to']    = $filters['date_to'] . ' 23:59:59';
         }
         if (!empty($filters['q']))          {
-            /* LIKE com % nos dois lados = busca em qualquer posição da string.
-            Aqui buscamos dentro do JSON de alterações, útil pra encontrar uma viação pelo nome mesmo sem saber o ID.
-            Atenção: LIKE '%texto%' não usa índice, faz varredura completa. Pra volumes grandes, considere FULLTEXT INDEX ou busca dedicada.
-            Pesquise "MySQL FULLTEXT search", "LIKE performance".
-            */
-            $wheres[] = 'h.alteracoes LIKE :q';
-            $params['q'] = '%' . $filters['q'] . '%';
+            /*
+             * Campo unificado: pesquisa no nome da viação, nome do usuário e no JSON de alterações.
+             * PDO não permite reutilizar o mesmo placeholder nomeado na mesma query então usamos :q, :q_v, :q_u.
+             *
+             * CAST(h.alteracoes AS CHAR) em MySQL converte JSON para texto.
+             * Isso permite usar LIKE para buscar dentro do JSON também nos testes porque usar JSON_SEARCH() seria possível em MySQL, mas não em sqlite.
+             *
+             * addcslashes escapa % e `_` que o banco interpreta como wildcards no LIKE.
+             * Sem isso, "100%" no campo de busca vira "qualquer coisa com 100 e mais alguma coisa".
+             *
+             * Atenção: LIKE '%texto%' não usa índice, faz varredura completa. Pra volumes grandes, considere FULLTEXT INDEX ou busca dedicada.
+             * Pesquise "MySQL JSON SEARCH", "LIKE performance", "database text search".
+             */
+            $escaped = addcslashes($filters['q'], '%_');
+            $wheres[] = '(CAST(h.alteracoes AS CHAR) LIKE :q OR v.nome LIKE :q_v OR u.nome LIKE :q_u)';
+            $params['q']   = '%' . $escaped . '%';
+            $params['q_v'] = '%' . $escaped . '%';
+            $params['q_u'] = '%' . $escaped . '%';
         }
 
         $whereSql = $wheres ? 'WHERE ' . implode(' AND ', $wheres) : '';

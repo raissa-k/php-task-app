@@ -7,6 +7,7 @@ namespace App\Controllers;
 
 use App\Core\View;
 use App\Repositories\UsuarioRepository;
+use App\Validators\UsuarioFilterValidator;
 
 /*
  * Por que o controller usa o Repository diretamente aqui, sem um Service?
@@ -27,13 +28,13 @@ final class UsuariosController
     /** Lista usuários com busca opcional por nome ou e-mail. */
     public function index(): void
     {
-        $q = (string) ($_GET['q'] ?? '');
-        $usuarios = $this->repo->all($q);
+        $filters  = new UsuarioFilterValidator()->parse($_GET);
+        $usuarios = $this->repo->all($filters['q']);
 
         View::render('admin/usuarios/index', [
             'title'    => 'Usuários',
             'usuarios' => $usuarios,
-            'q'        => $q,
+            'q'        => $filters['q'],
         ]);
     }
 }

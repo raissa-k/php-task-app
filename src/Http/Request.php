@@ -13,7 +13,7 @@ namespace App\Http;
  *              -> chama validated()
  *              -> se inválido: ValidationException com lista de erros
  *              -> se válido: array de dados
- * Vantagem prática: o controller nunca precisa saber como validar, ele só sabe que, se validated() não lançar exceção, os dados estão ok.
+ * Vantagem prática: o controller nunca precisa saber como validar, ele só sabe que, se validated() não lançar exception, os dados estão ok.
  * Pesquise "Single Responsibility Principle" e "Form Request" (conceito do Laravel).
 */
 
@@ -49,7 +49,7 @@ final class Request
 
         /*
          * O validator retorna ['errors' => [...], 'data' => [...]].
-         * Se errors não estiver vazio, lança a exceção com a lista.
+         * Se errors não estiver vazio, lança a exception com a lista.
          * O controller captura e re-renderiza o form com os erros.
         */
         $result = $this->validator->validate($this->data);

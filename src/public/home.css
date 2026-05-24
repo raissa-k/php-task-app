@@ -1,0 +1,446 @@
+/*
+home.css: estilos da página pública (home + layout público)
+Separado do app.css pra deixar claro o que é "admin" e o que é "público".
+
+Estratégia de classes aqui:
+- Classes de componente têm nomes simples e diretos (ex: .nav, .hero, .card)
+- Classes utilitárias são genéricas e reutilizáveis em qualquer lugar (ex: .flex, .container, .text-muted)
+- Se você se pegar copiando o mesmo bloco de CSS em dois lugares, é hora de virar uma utilitária
+*/
+
+/* VARIÁVEIS */
+:root {
+  --primary:      #1a56db;
+  --primary-dark: #1e40af;
+  --hero-start:   #1e3a8a;
+  --hero-end:     #0ea5e9;
+  --card-bg:      #ffffff;
+  --border:       #e5e7eb;
+  --text:         #111827;
+  --muted:        #6b7280;
+  --section-bg:   #f8fafc;
+  --max-w:        1120px;
+}
+
+/* RESET */
+/* Reseta o fundo pro contexto público (o app.css define um cinza levinho que fica estranho aqui) */
+.pub-body {
+  background: #ffffff;
+  margin: 0;
+}
+
+/* UTILITÁRIAS */
+
+/*
+Utilitárias: classes pequenas que fazem UMA coisa só.
+A vantagem é que você compõe o layout no HTML sem precisar ficar criando classes novas pra cada situação. Exemplo: <div class="flex items-center gap">
+*/
+
+/* Centraliza o conteúdo e limita a largura máxima */
+.container {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Flexbox básico */
+.flex           { display: flex; }
+.flex-col       { flex-direction: column; }
+.items-center   { align-items: center; }
+.justify-between{ justify-content: space-between; }
+.justify-center { justify-content: center; }
+.flex-wrap      { flex-wrap: wrap; }
+.flex-1         { flex: 1; }
+
+/* Gap padrão entre children de um flex/grid */
+.gap-sm  { gap: 8px; }
+.gap     { gap: 16px; }
+.gap-lg  { gap: 32px; }
+.gap-xl  { gap: 48px; }
+
+/* Grid auto-fill: distribui os children em colunas do tamanho mínimo dado */
+.grid-auto-sm { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 16px; }
+.grid-auto    { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+
+/* Tipografia */
+.text-center { text-align: center; }
+.text-sm     { font-size: 13px; }
+.text-lg     { font-size: 18px; }
+.text-xl     { font-size: 26px; }
+.font-bold   { font-weight: 700; }
+.font-black  { font-weight: 900; }
+.uppercase   { text-transform: uppercase; }
+.tracking    { letter-spacing: .5px; }
+
+/* Cores de texto */
+.text-white  { color: #ffffff; }
+.text-muted  { color: var(--muted); }
+.text-primary{ color: var(--primary); }
+
+/* Espaçamentos verticais */
+.mt-sm { margin-top: 6px; }
+.mt    { margin-top: 12px; }
+.mt-lg { margin-top: 24px; }
+.mb-sm { margin-bottom: 6px; }
+.mb    { margin-bottom: 12px; }
+.mb-lg { margin-bottom: 32px; }
+
+/* BOTÕES */
+
+/*
+.btn = base compartilhada (forma, fonte, cursor)
+.btn-primary, .btn-outline = variações de cor
+Composição no HTML: <button class="btn btn-primary">Entrar</button>
+*/
+
+.btn {
+  display: inline-block;
+  padding: 9px 20px;
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  transition: background .15s, color .15s;
+}
+
+.btn-primary {
+  background: #ffffff;
+  color: var(--primary);
+}
+
+.btn-primary:hover {
+  background: #eff6ff;
+  color: var(--primary-dark);
+}
+
+.btn-outline {
+  background: transparent;
+  color: #ffffff;
+  border: 1.5px solid rgba(255,255,255,.6);
+}
+
+.btn-outline:hover {
+  background: rgba(255,255,255,.1);
+}
+
+.btn-blue {
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 16px;
+  padding: 13px;
+  border-radius: 8px;
+  width: 100%;
+  text-align: center;
+  display: block;
+  margin-top: 4px;
+}
+
+.btn-blue:hover {
+  background: var(--primary-dark);
+}
+
+/* NAV PÚBLICA */
+
+.nav-pub {
+  background: var(--primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-pub > .container {
+  height: 60px;
+  /* .container + flex + items-center + justify-between fazem o trabalho aqui */
+}
+
+/* Logo: texto branco grande */
+.nav-logo {
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 800;
+  text-decoration: none;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+
+.nav-logo:hover { opacity: .9; }
+
+/* Link simples no nav (não é botão) */
+.nav-link {
+  color: rgba(255,255,255,.85);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.nav-link:hover { color: #ffffff; }
+
+/* FLASH PÚBLICA */
+
+.flash-pub {
+  padding: 12px 24px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.flash-pub.danger  { background: #fef2f2; color: #991b1b; border-bottom: 1px solid #fecaca; }
+.flash-pub.success { background: #f0fdf4; color: #166534; border-bottom: 1px solid #bbf7d0; }
+
+/* HERO */
+
+.hero {
+  background: linear-gradient(135deg, var(--hero-start) 0%, var(--hero-end) 100%); /* obrigada https://cssgradient.io/ */
+  padding: 64px 0;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+}
+
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+/* Título principal do hero: usa utilitária .font-black + .text-white */
+.hero-title {
+  font-size: clamp(36px, 5vw, 56px);
+  letter-spacing: -1px;
+  line-height: 1.1;
+  margin: 0 0 12px;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  line-height: 1.5;
+  margin: 0;
+  color: rgba(255,255,255,.85);
+}
+
+.hero-eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 8px;
+  color: rgba(255,255,255,.75);
+}
+
+/* Cartão branco de busca dentro do hero */
+.card {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.18);
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 20px;
+  color: var(--text);
+}
+
+/* FORM DE BUSCA */
+
+.search-form { display: flex; flex-direction: column; gap: 12px; }
+
+.field { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.field-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.field-input {
+  width: 100%;
+  max-width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 15px;
+  background: #f9fafb;
+  margin: 0;
+  transition: border-color .15s;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: #ffffff;
+}
+
+/* DIFERENCIAIS DA EMPRESA, AQUELES QUE FICAM EMBAIXO DO BANNER */
+
+.diferenciais {
+  background: #ffffff;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 0;
+}
+
+.diferencial {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.diferencial-icon { font-size: 28px; line-height: 1; }
+
+/* SEÇÃO DE VIAÇÕES */
+
+.section {
+  padding: 56px 0;
+}
+
+.section-alt {
+  background: var(--section-bg);
+}
+
+/* Card de viação */
+.viacao-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  transition: box-shadow .2s, transform .15s;
+}
+
+.viacao-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,.10);
+  transform: translateY(-2px);
+}
+
+.viacao-logo {
+  width: 80px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.viacao-logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/*
+Placeholder de iniciais: quando não tem logo, mostra as primeiras letras com fundo colorido.
+Evita "broken image" e ainda fica bonito :D
+*/
+.viacao-initials {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--hero-end) 100%);
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 1px;
+}
+
+.viacao-nome {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.viacao-cidade {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Quando não tem nada */
+.empty-state {
+  text-align: center;
+  color: var(--muted);
+  padding: 40px;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+/* FOOTER */
+
+.footer-pub {
+  background: #1e293b;
+  color: rgba(255,255,255,.6);
+  text-align: center;
+  padding: 20px 24px;
+  font-size: 13px;
+}
+
+.footer-pub p { margin: 0; color: inherit; }
+
+/* PÁGINA DE AUTH (login) */
+
+/* Centraliza o card de login na tela.
+min-height desconta o nav (60px) e o footer (~57px) pra preencher o espaço restante.
+Sem isso, o card ficaria colado no topo da página.
+*/
+.auth-wrap {
+  min-height: calc(100vh - 117px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--section-bg);
+  padding: 40px 24px;
+}
+
+/* Limita a largura do card de login, formulários largos são difíceis de preencher */
+.auth-wrap .card {
+  width: 100%;
+  max-width: 440px;
+}
+
+/* Bloco de erro dentro do card */
+.auth-error {
+  background: #fff5f5;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+
+/* RESPONSIVO(ZINHO) */
+
+@media (max-width: 768px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .hero-title { font-size: 36px; }
+
+  .field-row { grid-template-columns: 1fr; }
+
+  /* Em telas pequenas, diferenciais ficam em coluna */
+  .diferenciais > .container {
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .grid-auto { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+}

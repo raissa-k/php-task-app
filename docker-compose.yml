@@ -1,41 +1,42 @@
+# Docker compose do demo de viações (dev)
 services:
-  app:
+  viacoes_php_demo_app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: task_app_app
+    container_name: viacoes_php_demo_app
+    restart: unless-stopped
     ports:
       - "8081:80"
     command: >
       sh -c "if [ ! -f vendor/autoload.php ]; then
-        composer install --no-interaction --prefer-dist;
+        COMPOSER_ALLOW_SUPERUSER=1 composer install --no-interaction --prefer-dist --optimize-autoloader;
       else
         composer dump-autoload --no-interaction --optimize;
       fi && apache2-foreground"
     volumes:
       - ./:/var/www/html
     environment:
-      DB_HOST: db
-      DB_NAME: tasks
-      DB_USER: app
-      DB_PASSWORD: app123
+      DB_HOST: CHANGEME
+      DB_NAME: CHANGEME
+      DB_USER: CHANGEME
+      DB_PASSWORD: CHANGEME
     depends_on:
-      - db
+      - viacoes_php_demo_db
 
-  db:
+  viacoes_php_demo_db:
     image: mysql:8.0
-    container_name: task_app_db
+    container_name: viacoes_php_demo_db
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: tasks
-      MYSQL_USER: app
-      MYSQL_PASSWORD: app123
-      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: CHANGEME
+      MYSQL_ROOT_PASSWORD: CHANGEME
     ports:
       - "3308:3306"
     volumes:
-      - task_mysql_data:/var/lib/mysql
+      - viacoes_php_demo_mysql_data:/var/lib/mysql
       - ./src/database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
 
 volumes:
-  task_mysql_data:
+  viacoes_php_demo_mysql_data:
+    driver: local

@@ -1,0 +1,37 @@
+[
+  {
+    "nome": "Cometa",
+    "cidade": "Campinas",
+    "ativa": true
+  },
+  {
+    "nome": "Itapemirim",
+    "cidade": "Vitória",
+    "ativa": true
+  },
+  {
+    "nome": "Penha",
+    "cidade": "Belo Horizonte",
+    "ativa": false
+  },
+  {
+    "nome": "Catarinense",
+    "cidade": "Florianópolis",
+    "ativa": true
+  },
+  {
+    "nome": "Real Expresso",
+    "cidade": "Brasília",
+    "ativa": true
+  },
+  {
+    "nome": "",
+    "cidade": "Porto Alegre",
+    "ativa": true
+  },
+  {
+    "nome": "Sem Cidade",
+    "cidade": "",
+    "ativa": false
+  }
+]

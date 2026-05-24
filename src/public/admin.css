@@ -1,0 +1,129 @@
+/*
+admin.css: estilos específicos das páginas administrativas, carregado apenas no _layout.php (admin), não no _layout_public.php.
+Separar CSS por contexto (público x admin) é legal:
+- O usuário público não baixa estilos de admin que ele nunca vai ver
+- Você sabe onde procurar cada estilo
+- Mudanças no visual admin não afetam a home pública (e vice-versa)
+Estrutura dos arquivos CSS desse projeto:
+app.css    -> base compartilhada: reset, tipografia, utilitárias
+admin.css  -> estilos só das telas admin
+home.css   -> estilos só da home pública e layout público
+*/
+
+/*
+TABELA ADMIN
+Versão mais completa da tabela padrão do app.css, com zebra striping e hover pra facilitar a leitura de dados.
+*/
+
+.admin-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.admin-table th,
+.admin-table td {
+  border: 1px solid #ddd;
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.admin-table th {
+  background: #f4f4f4;
+  font-size: 13px;
+  font-weight: 700;
+  color: #374151;
+}
+
+/* Zebra striping: linhas alternadas levemente coloridas facilitam a leitura */
+.admin-table tr:nth-child(even) td {
+  background: #fbfbfb;
+}
+
+.admin-table tr:hover td {
+  background: #f1f7ff;
+}
+
+/* FORMULÁRIO DE FILTRO
+Layout horizontal pra não ocupar muito espaço vertical. Os campos são menores que os de cadastro pra economizar espaço.
+*/
+
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;         /* quebra linha se não couber tudo */
+  align-items: flex-end;   /* alinha na base pra ficar bonito com labels */
+  gap: 12px 16px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+/*
+.filter-field: grupo de label + input dentro do form de filtro.
+Diferente do .form-group do admin (que é vertical e maior), esse fica inline com label em cima e input embaixo.
+*/
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  white-space: nowrap;
+}
+
+/*
+Tamanhos de input de filtro:
+Usamos width fixa aqui porque os filtros têm conteúdo previsível (IDs são curtos, texto livre pode ser maior, etc.)
+Por que não usar o input padrão do app.css? O padrão tem max-width: 720px e fica muito grande pra um filtro.
+*/
+.filter-input-xs  { width: 60px; }
+.filter-input-sm  { width: 90px; }
+.filter-input-md  { width: 130px; }
+.filter-input-lg  { width: 200px; }
+
+/* Sobrescreve o padding padrão do input pra ficar compacto no filtro */
+.filter-form input,
+.filter-form select {
+  padding: 7px 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 13px;
+  background: #ffffff;
+  margin: 0;               /* reseta o margin-top do input do app.css */
+  max-width: none;         /* reseta o max-width do input do app.css */
+}
+
+.filter-form input:focus,
+.filter-form select:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+/* DIFF DE ALTERAÇÕES (histórico)
+Bloco <pre> pra mostrar JSON do before/after de uma viação.
+
+white-space: pre-wrap: mantém as quebras de linha do JSON formatado mas permite quebrar linha se o texto for largo demais.
+Sem isso, o <pre> vai vazar do container.
+
+Pesquise "CSS white-space" pra ver todas as opções, é meio confuso.
+*/
+.diff-pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 8px 0 0;
+  padding: 8px;
+  background: #f8fafc;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+}

@@ -1,6 +1,5 @@
 /*
-  CSS básico e didático.
-  Objetivo: melhorar legibilidade sem adicionar complexidade.
+  CSS básico, só pra melhorar legibilidade sem adicionar complexidade.
 */
 
 :root {
@@ -190,4 +189,59 @@ button[type="submit"]:hover {
 
 .small {
   font-size: 13px;
+}
+
+/* UTILITÁRIAS COMPARTILHADAS
+Essas classes são pequenas e fazem uma coisa só, por isso se chamam "utilitárias".
+A vantagem é que você compõe o layout no HTML sem precisar criar um seletor CSS novo a cada vez.
+Dica: se você se pegar escrevendo um style="" no HTML, provavelmente precisa de uma utilitária aqui.
+
+.inline-form: form que deve ficar na mesma linha do conteúdo ao redor. Uso clássico: botão de logout dentro do nav, ao lado de links.
+*/
+.inline-form {
+  display: inline;
+}
+
+/* .form-group: espaçamento vertical entre campos de formulário.
+Separa os campos sem precisar de margin em cada input individualmente.
+*/
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+/*.form-actions: linha de botões no final do formulário.
+Fica junto mas não esticado, align-items: center alinha verticalmente o botão e o link de cancelar.
+*/
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+/*.error-list: lista de erros de validação.
+Vermelho, espaçamento padrão, sem margin extra.
+Por que usar uma classe em vez de style=""? Porque se mudar a cor ou o tamanho, você muda em um lugar só.
+*/
+.error-list {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--danger);
+}
+
+/*.logo-preview: minatura do logo atual de uma viação.
+Usada no form de edição pra mostrar o logo que já existe.
+*/
+.logo-preview {
+  height: 40px;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+/* .w-full: ocupa toda a largura disponível do container pai */
+.w-full {
+  width: 100%;
 }

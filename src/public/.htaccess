@@ -1,11 +1,25 @@
+# Regras do Apache para direcionar tudo ao front controller
 <IfModule mod_rewrite.c>
-RewriteEngine On
+    RewriteEngine On
 
-# Se existir arquivo/pasta, serve direto
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^ - [L]
+    # Se existir arquivo/pasta física, serve direto (CSS, imagens, favicon, etc.)
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
 
-# Caso contrário, manda para o front controller
-RewriteRule ^ index.php [L]
+    # Qualquer outro caminho vai para o front controller
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# Desativa listagem de diretórios.
+# Sem isso, se o Apache não encontrar um index em algum subdiretório, ele exibe todos os arquivos daquela pasta pro visitante.
+# Pesquise "Apache directory listing", "Options Indexes".
+Options -Indexes
+
+# Remove o header X-Powered-By que o PHP injeta automaticamente em toda resposta.
+# Por padrão ele expõe a versão exata do PHP (ex: "PHP/8.4.1"), information disclosure desnecessário.
+# Requer mod_headers, no nosso Dockerfile o Apache já o carrega via a2enmod.
+# Pesquise "X-Powered-By header", "information disclosure".
+<IfModule mod_headers.c>
+    Header unset X-Powered-By
 </IfModule>

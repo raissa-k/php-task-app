@@ -1,3 +1,4 @@
+# Dockerfile da app demo: PHP + Apache
 FROM php:8.4-apache
 
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer

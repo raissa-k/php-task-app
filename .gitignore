@@ -1,22 +1,28 @@
-# OS
+# Arquivos do SO
 .DS_Store
 
 # Composer
 /vendor/
 /composer.lock
 
-# Environment files
+# Arquivos de ambiente
 .env
+# cobre .env.staging, .env.testing, etc.
 .env.*
 !.env.example
 
-# IDE
+# IDEs
 .idea/
 .vscode/
 
-# Logs / temp
+# Logs / temporários
 *.log
 *.tmp
 
 # Docker overrides
-/docker-compose.override.yml
+# deixado aqui por fins didáticos
+#/docker-compose.override.yml
+
+/.phpunit.result.cache
+/.phpunit.cache
+/storage

@@ -1,0 +1,18 @@
+# Override de dev: lê variáveis do .env pra não sujar o compose principal
+# Este arquivo estaria no .gitignore junto com o .env, enviado por questões didáticas
+services:
+  viacoes_php_demo_app:
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+
+  viacoes_php_demo_db:
+    env_file:
+      - .env
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}

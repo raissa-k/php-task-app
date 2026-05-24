@@ -1,26 +1,31 @@
+### Arquivo com exemplos de requests pra testar API na IDE
 @baseUrl = http://localhost:8081
+@apiToken = changeme
 
-### API - listar tasks (atalho)
+### API - listar viações (atalho)
 GET {{baseUrl}}/api
 Accept: application/json
 
-### API - listar tasks
-GET {{baseUrl}}/api/tasks
+### API - listar viações
+GET {{baseUrl}}/api/viacoes
 Accept: application/json
 
-### API - buscar task por id (valido)
-GET {{baseUrl}}/api/tasks/1
+### API - buscar viação por id (válido)
+GET {{baseUrl}}/api/viacoes/1
 Accept: application/json
 
-### API - buscar task inexistente
-GET {{baseUrl}}/api/tasks/99999
+### API - buscar viação inexistente
+GET {{baseUrl}}/api/viacoes/99999
 Accept: application/json
 
-### API - metodo nao permitido (deve retornar 404 no router atual)
-POST {{baseUrl}}/api/tasks
+### API - criar viação (precisa X-API-TOKEN)
+POST {{baseUrl}}/api/viacoes
 Accept: application/json
 Content-Type: application/json
+X-API-TOKEN: {{apiToken}}
 
 {
-  "title": "Nova task de teste"
+  "nome": "Nova Viação",
+  "cidade": "Florianópolis",
+  "ativa": 1
 }

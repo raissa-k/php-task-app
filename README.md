@@ -11,7 +11,7 @@ Fluxo principal do app:
 - Model/DTO (`src/Models/Task.php`)
 - Views (`src/views/*.php`)
 
-## Objetivo didático
+## Objetivo
 
 Este projeto demonstra, de forma pequena e funcional:
 
